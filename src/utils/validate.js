@@ -1,6 +1,5 @@
 import request from '@/router/axios'
 
-let beforeValue = {};
 const validate = {
   /**
    * 邮箱
@@ -8,30 +7,6 @@ const validate = {
    */
   email(s) {
     return /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(s)
-  },
-
-   /**
-   * 座机或者手机号码校验
-   * @param {value} 号码
-   */
-  checkPhone: (value) => {
-      let regPone = null;
-      let mobile = /^1(3|4|5|6|7|8|9)\d{9}$/; //最新16手机正则
-      let tel = /^0\d{2,3}-?\d{7,8}$/; //座机
-      if (value.charAt(0) == 0) {    // charAt查找第一个字符方法，用来判断输入的是座机还是手机号
-        regPone = tel;
-      } else {
-        regPone = mobile;
-      }
-      return regPone.test(value)
-  },
-
-  /**
-   * 手机号码
-   * @param {*} s
-   */
-  mobile(s) {
-    return /^1[0-9]{10}$/.test(s)
   },
 
   /**
@@ -45,22 +20,9 @@ const validate = {
   /**
    * 密码
    * @param {*} s
-   */
+  */
   password(s) {
     return /^(\w){6,64}$/.test(s)
-  },
-
-  /**
-   * URL地址
-   * @param {*} s
-   */
-  isURL(s) {
-    return /^http[s]?:\/\/.*/.test(s)
-  },
-
-  isValidUsername(str) {
-    const valid_map = ['sys', 'editor'];
-    return valid_map.indexOf(str.trim()) >= 0
   },
 
   /* 合法uri */
@@ -103,11 +65,12 @@ const validate = {
     }
     return flag
   },
+
   /**
    * check email
    * @param email
    * @returns {boolean}
-   */
+  */
   checkEmail(email) {
     const re = /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email)
@@ -115,7 +78,7 @@ const validate = {
 
   /**
    * 判断身份证号码
-   */
+  */
   cardId(code) {
     let list = [];
     let result = true;
@@ -196,20 +159,9 @@ const validate = {
     return list
   },
 
-  isMobile(rule, value, callback) {
-    if (this.checkNotNull(value)) {
-      let rs = this.checkMobile(value);
-      if (rs && rs[0]) {
-        callback(new Error(rs[1]));
-        return;
-      }
-    }
-    callback()
-  },
-
   /**
    * 判断手机号码是否正确
-   */
+  */
   checkMobile(phone) {
     let list = [];
     let result = true;
@@ -237,50 +189,27 @@ const validate = {
 
   /**
    * 判断姓名是否正确
-   */
+  */
   checkName(name) {
     let regName = /^[\u4e00-\u9fa5]{2,4}$/;
     if (!regName.test(name)) return false;
     return true
   },
 
-  /**
-   * 判断是否为整数
-   */
-  isDigits(rule, value, callback) {
-    if (this.checkNotNull(value)) {
-      let rs = this.checkDigits(value);
-      if (rs) {
-        callback(new Error(this.checkNotNull(rule.message) ? rule.message : "请输入整数"));
-        return;
-      }
-    }
-    callback()
-  },
 
   /**
    * 判断是否为整数
-   */
+  */
   checkDigits(num) {
     let regName = /[^\d]/g;
     if (!regName.test(num)) return false;
     return true;
   },
 
-  isNumber(rule, value, callback) {
-    if (this.checkNotNull(value)) {
-      let rs = this.checkNumber(value);
-      if (rs) {
-        callback(new Error(this.checkNotNull(rule.message) ? rule.message : "请输入数字"));
-        return;
-      }
-    }
-    callback()
-  },
 
   /**
    * 判断是否为小数
-   */
+  */
   checkNumber(num) {
     let regName = /[^\d.]/g;
     if (!regName.test(num)) return false;
@@ -288,22 +217,8 @@ const validate = {
   },
 
   /**
-   * 判断是否为小数
-   */
-  checkNumord(num, type) {
-    let regName = /[^\d.]/g;
-    if (type == 1) {
-      if (!regName.test(num)) return false
-    } else if (type == 2) {
-      regName = /[^\d.]/g;
-      if (!regName.test(num)) return false
-    }
-    return true
-  },
-
-  /**
    * 判断是否为空
-   */
+  */
   checkNull(val) {
     if (typeof val === 'boolean') {
       return false
@@ -320,39 +235,6 @@ const validate = {
       return false
     }
     return false
-  },
-
-  /**
-   * 判断是否为空
-   */
-  checkNotNull(val) {
-    return !this.checkNull(val);
-  },
-
-  checkUniqueField(url) {
-    return request({
-      url: url,
-      method: 'get'
-    })
-  },
-  isUnique(rule, value, callback, url) {
-    if (this.checkNotNull(value) && value != beforeValue[rule.field]) {
-      if (this.checkNull(url)) {
-        url = rule.url;
-      }
-      url += '&' + rule.field + '=' + value;
-      this.checkUniqueField(url).then(rs => {
-        beforeValue[rule.field] = value;
-        if (!rs) {
-          callback(new Error(this.checkNotNull(rule.message) ? rule.message : "已存在，请修正"))
-        } else {
-          callback()
-        }
-      });
-    } else {
-      callback()
-    }
-  },
-
+  }
 };
 export default validate
