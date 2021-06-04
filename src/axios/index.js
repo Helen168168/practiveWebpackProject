@@ -20,7 +20,6 @@ const responseInterceptors = (res, reDataOnly) => {
     const message = res.data.message || errorCode[status] || errorCode['default'];
     //没有权限
     if (status === 401) {
-     
       return Promise.reject(res)
     }
     //请求失败
@@ -33,3 +32,13 @@ const responseInterceptors = (res, reDataOnly) => {
     }
     return reDataOnly ? res.data : res
 }
+
+objAxios.interceptors.request.use(requestInterceptors, error => {
+    return Promise.reject(error)
+});
+
+objAxios.interceptors.response.use( res => responseInterceptors(res, true), error => {
+    return Promise.reject(new Error(error))
+});
+
+export default objAxios
