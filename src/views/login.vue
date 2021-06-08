@@ -7,8 +7,10 @@
 <script>
 export default {
   name: 'login',
-  props: {
-    msg: String
+  data() {
+    return {
+      msg: 'Please login in'
+    }
   }
 }
 </script>
