@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
     <h1 @click="clickMe">{{ msg }}</h1>
+    <span v-copyText="msg">复制</span>
+    <el-input type='textarea'></el-input>
   </div>
 </template>
 
